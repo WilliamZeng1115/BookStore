@@ -16,7 +16,7 @@ import Register from './pages/Register';
 import Search from './pages/Search';
 import UserSetting from './pages/UserSetting';
 
-import Menu from './components/layout/Menu';
+import Header from './components/layout/Header';
 
 import { Provider } from 'react-redux';
 import store from './store';
@@ -69,11 +69,12 @@ class App extends Component {
             <Fragment>
               <Alerts />
               <Router>
-                <Menu />
+                <Header />
                 <Switch>
                   <Route exact path="/" component={Home}/>
                   <Route exact path="/Login" component={Login}/>
                   <Route exact path="/Register" component={Register}/>
+                  <Route exact path="/SearchResult" component={Search}/>
                 </Switch>
                 <Footer />
               </Router>

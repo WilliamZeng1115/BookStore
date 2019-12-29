@@ -6,7 +6,6 @@ import { loginUser, loadUser } from '../actions/api/auth'
 
 //import { Query, Mutation } from 'react-apollo'
 //import { LOGIN_IN } from '../actionsGraphQL/auth'
-import Form from '../components/layout/Form'
 
 export class Login extends Component {
   state = {
@@ -15,18 +14,13 @@ export class Login extends Component {
   }
 
   static propTypes = {
-    loadUser: PropTypes.func.isRequired,
     loginUser: PropTypes.func.isRequired,
     isAuthenticated: PropTypes.bool
   };
 
   onSubmit = e => {
     e.preventDefault();
-    var that = this;
-    this.props.loginUser(this.state.username, this.state.password).then(e => {
-      console.log("loading user");
-      that.props.loadUser();
-    });
+    this.props.loginUser(this.state.username, this.state.password);
   }
 
   onChange = e => this.setState({
@@ -37,22 +31,43 @@ export class Login extends Component {
     if(this.props.isAuthenticated) {
       return <Redirect to="/" />;
     }
-    const usernameField = { name: "username", onChange: this.onChange, attributes: { displayName: "Username" } };
-    const passwordField = { name: "password", onChange: this.onChange, attributes: { type: "password", displayName: "Password" } };
     const { username, password } = this.state;
-    const attributes = { submitButtonName: "Login", onSubmit: this.onSubmit };
-    const formSections = [{ attributes: { class: "form-group" },
-                            formItems: [ usernameField, passwordField ]}];
     return (
       <div className="col-md-6 m-auto">
         <div className="card card-body mt-5">
           <h2 className="text-center">Login</h2>
-          <Form attributes={attributes} formSections={formSections}/>
-          <p>
-            Don't have an account? <Link to="/register">Register</Link>
-          </p>
-         </div>
-       </div>
+          <form onSubmit={this.onSubmit}>
+            <div className="form-group">
+              <label>Username</label>
+              <input
+                type="text"
+                className="form-control"
+                name="username"
+                onChange={this.onChange}
+                value={username}
+              />
+            </div>
+            <div className="form-group">
+              <label>Password</label>
+              <input
+                type="password"
+                className="form-control"
+                name="password"
+                onChange={this.onChange}
+                value={password}
+              />
+            </div>
+            <div className="form-group">
+              <button type="submit" className="btn btn-primary">
+                Login
+              </button>
+            </div>
+            <p>
+              Don't have an account? <Link to="/register">Register</Link>
+            </p>
+          </form>
+        </div>
+      </div>
     )
    }
  }
@@ -61,4 +76,4 @@ export class Login extends Component {
  const mapStateToProps = state => ({
    isAuthenticated: state.auth.isAuthenticated
  });
- export default connect(mapStateToProps, { loginUser, loadUser })(Login);
+ export default connect(mapStateToProps, { loginUser })(Login);

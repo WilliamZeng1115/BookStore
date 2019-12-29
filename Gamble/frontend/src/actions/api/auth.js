@@ -32,7 +32,7 @@ export const loadUser = () => (dispatch, getState) => {
   });
 }
 
-export const loginUser = (username, password) => (dispatch) => new Promise(function(resolve, reject) {
+export const loginUser = (username, password) => (dispatch) => {
   const config = {
     headers: {
       'Content-Type': 'application/json'
@@ -54,15 +54,13 @@ export const loginUser = (username, password) => (dispatch) => new Promise(funct
       type: LOGIN_SUCCESS,
       payload: res.data.data.tokenAuth.token
     });
-    resolve();
   }).catch(e => {
     dispatch(getErrors(e.response.data, e.response.status));
     dispatch({
       type: LOGIN_FAIL
     });
-    reject();
   });
-});
+};
 
 export const logoutUser = () => (dispatch) => {
   dispatch({
@@ -89,7 +87,7 @@ export const registerUser = ({ username, password, email, firstName, lastName })
   };
 
   axios.post(GRAPHQL_URI, body, config).then(res => {
-    console.log(res.data);
+    console.log(res);
     dispatch({
       type: REGISTER_SUCCESS,
       payload: res.data.data.userCreate
