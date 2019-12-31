@@ -8,12 +8,15 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MailIcon from '@material-ui/icons/Mail';
 import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
 import Button from '@material-ui/core/Button';
+import { withRouter } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 
 import { logoutUser } from '../../actions/api/auth'
 
 export class Header extends Component {
   state = {
-    search: ''
+    search: '',
+    enterPressed:false
   }
 
   static propTypes = {
@@ -23,8 +26,9 @@ export class Header extends Component {
 
   searchBooks = e => {
     if(e.key === 'Enter') {
-      const { search } = this.state;
-      console.log(search);
+      this.setState({
+        enterPressed: true
+      });
     }
   }
 
@@ -33,8 +37,16 @@ export class Header extends Component {
   });
 
   render() {
-    const { search } = this.state;
+    const { search, enterPressed } = this.state;
     const { isAuthenticated, user } = this.props.auth;
+
+    if(enterPressed) {
+      this.state.enterPressed = false;
+      return <Redirect to={{
+            pathname: '/SearchResult',
+            state: { search: search }
+        }}/>
+    }
 
     const authLinksRight = (
       <Fragment>
@@ -83,7 +95,7 @@ export class Header extends Component {
           </div>
           <div className="form-inline has-search center">
             <SearchOutlinedIcon className="btn fa fa-search form-control-feedback navbar-search-icon" />
-            <input className="form-control mr-sm-2 navbar-search" name="search" type="search" placeholder="Search..." value={search} aria-label="Search" onChange={this.onChange} onKeyDown={this.searchBooks}/>
+            <input className="form-control mr-sm-2 navbar-search" name="search" type="search" placeholder="Search..." value={search} aria-label="Search" onChange={this.onChange} onKeyDown={this.searchBooks.bind(this)}/>
           </div>
           <div className="nav right" id="nav-tab" role="tablist">
             { rightMenuItems }
@@ -98,4 +110,4 @@ const mapStateToProps = state => ({
   auth: state.auth
 });
 
-export default connect(mapStateToProps, { logoutUser })(Header);
+export default connect(mapStateToProps, { logoutUser })(withRouter(Header));

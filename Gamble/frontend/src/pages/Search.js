@@ -6,22 +6,16 @@ import Info from '../components/Data/Info'
 
 // TODO: get it from database...temporary
 const allGames = [
-  {id: 1, title:'test',description:'this is a game',room:'GameRoom12345'},
-  {id: 2, title:'test2',description:'this is a game2',room:'GameRoom123456'},
-  {id: 3, title:'test3',description:'this is a game3',room:'GameRoom1234567'}
+  {id: 1, thumbnail: "../../static/books/Halo.jpg", rating: 3, title:'Halo Reach', author: 'Bungie', isbn:"123456789", description:'this is a game 1231234',  price: 10.0},
+  {id: 2, thumbnail: "../../static/books/HaloODST.jpg", rating: 4, title:'Halo ODST', author: 'Bungie', isbn:"12345312346789", description:'this is a game qwewqeasd', price: 25.0},
+  {id: 3, thumbnail: "../../static/books/Halo3.jpg",rating: 5, title:'Halo 3', author: 'Bungie', isbn:"1234541234678494", description:'this is a game zzzzzzzzzzzzzzzzz',price: 35.5},
 ];
 
 export class Search extends Component {
   state = {
-    games: allGames,
+    books: allGames,
     showDetails: false,
     bookId: -1
-  }
-
-  myFunction(event) {
-    this.setState({
-      games: allGames.filter(g => g.title.includes(event.target.value))
-    });
   }
 
   togglePopup(id) {
@@ -32,58 +26,35 @@ export class Search extends Component {
   }
 
   render() {
+    if(this.props.location.state !== undefined) {
+      const { search } = this.props.location.state;
+      if(search !== undefined) {
+        this.state.books = allGames.filter(g => g.title.includes(search));
+      }
+    }
+    const searchItems = this.state.books.map((item, key) =>
+      <div key={item.id} className="searchItem" onClick={this.togglePopup.bind(this, item.id)}>
+        <div>
+          <div className="bookTitle">{item.title}</div>
+          <div className="thumbnail"><img src={item.thumbnail} /></div>
+          <div className="infoBox">
+            <div className="content">
+              <label>Price</label>
+              <span className="value">${item.price}</span>
+            </div>
+            <div className="content">
+              <label>Rating</label>
+              <Rating name="read-only" value={item.rating} readOnly />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
     return (
       <Fragment>
         {this.state.showDetails ? <Info id={this.state.bookId} onClose={this.togglePopup.bind(this, -1)}/> : null}
         <div id="search">
-          <div className="searchItem" onClick={this.togglePopup.bind(this, 1)}>
-            <div>
-              <div className="bookTitle">Halo Reach</div>
-              <div className="thumbnail"><img src="../../static/books/Halo.jpg"/></div>
-              <div className="infoBox">
-                <div className="content">
-                  <label>Price</label>
-                  <span className="value">$10.0</span>
-                </div>
-                <div className="content">
-                  <label>Rating</label>
-                  <Rating name="read-only" value={3} readOnly />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="searchItem" onClick={this.togglePopup.bind(this, 2)}>
-            <div>
-              <div className="bookTitle">Halo ODST</div>
-              <div className="thumbnail"><img src="../../static/books/HaloODST.jpg" /></div>
-              <div className="infoBox">
-                <div className="content">
-                  <label>Price</label>
-                  <span className="value">$25.0</span>
-                </div>
-                <div className="content">
-                  <label>Rating</label>
-                  <Rating name="read-only" value={4} readOnly />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="searchItem" onClick={this.togglePopup.bind(this, 3)}>
-            <div>
-              <div className="bookTitle">Halo 3</div>
-              <div className="thumbnail"><img src="../../static/books/Halo3.jpg" /></div>
-              <div className="infoBox">
-                <div className="content">
-                  <label>Price</label>
-                  <span className="value">$35.5</span>
-                </div>
-                <div className="content">
-                  <label>Rating</label>
-                  <Rating name="read-only" value={5} readOnly />
-                </div>
-              </div>
-            </div>
-          </div>
+          {searchItems}
         </div>
       </Fragment>
     )
