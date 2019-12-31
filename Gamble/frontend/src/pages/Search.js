@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from 'react'
 import Rating from '@material-ui/lab/Rating';
 
+import Filter from '../components/layout/Filter'
 import Info from '../components/Data/Info'
-
 
 // TODO: get it from database...temporary
 const allGames = [
@@ -53,8 +53,11 @@ export class Search extends Component {
     return (
       <Fragment>
         {this.state.showDetails ? <Info id={this.state.bookId} onClose={this.togglePopup.bind(this, -1)}/> : null}
-        <div id="search">
-          {searchItems}
+        <div id="parent">
+          <Filter />
+          <div id="search">
+            {searchItems}
+          </div>
         </div>
       </Fragment>
     )
